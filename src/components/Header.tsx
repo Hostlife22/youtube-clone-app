@@ -1,13 +1,17 @@
-import React from "react";
+import React, { FC } from "react";
 import { AiOutlineSearch } from "react-icons/ai";
 import { FaBars } from "react-icons/fa";
 import { MdApps, MdNotifications } from "react-icons/md";
 import styled from "styled-components";
 
-const Header = () => {
+type HeaderProps = {
+  handleToggleSidebar: () => void;
+};
+
+const Header: FC<HeaderProps> = ({ handleToggleSidebar }) => {
   return (
     <HeaderContainer className="border border-dark">
-      <HeaderMenu size={26} />
+      <HeaderMenu size={26} onClick={handleToggleSidebar} />
       <HeaderLogo
         src="https://pngimg.com/uploads/youtube/youtube_PNG2.png"
         alt="logo"
