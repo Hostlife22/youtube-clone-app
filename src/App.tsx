@@ -11,7 +11,6 @@ function App() {
 
   const handleToggleSidebar = (): void => {
     toggleSidebar((value) => !value);
-    console.log("click");
   };
 
   return (
