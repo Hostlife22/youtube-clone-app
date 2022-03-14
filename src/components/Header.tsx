@@ -116,6 +116,10 @@ const HeaderIcons = styled.div`
     margin-left: 5px;
   }
 
+  > * {
+    cursor: pointer;
+  }
+
   @media (max-width: 520px) {
     > *:not(img) {
       display: none;
