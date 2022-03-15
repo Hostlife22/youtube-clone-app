@@ -1,7 +1,24 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { useAppDispatch, useAppSelector } from "../app/hooks";
+import { selectAccessToken, userLogin } from "../features/user/userSlice";
 
 const LoginScreen = () => {
+  const dispatch = useAppDispatch();
+  const accessToken = useAppSelector(selectAccessToken);
+  const navigate = useNavigate();
+
+  const handleLogin = () => {
+    dispatch(userLogin());
+  };
+
+  useEffect(() => {
+    if (accessToken) {
+      navigate("/");
+    }
+  }, [accessToken, navigate]);
+
   return (
     <Login>
       <LoginContainer>
@@ -9,7 +26,7 @@ const LoginScreen = () => {
           src="https://pngimg.com/uploads/youtube/youtube_PNG2.png"
           alt="logo"
         />
-        <button>Login With google</button>
+        <button onClick={handleLogin}>Login With google</button>
         <p>This Project is made using YOUTUBE DATA API</p>
       </LoginContainer>
     </Login>

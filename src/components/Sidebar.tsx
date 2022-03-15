@@ -9,6 +9,8 @@ import {
   MdThumbUp,
 } from "react-icons/md";
 import styled from "styled-components";
+import { useAppDispatch } from "../app/hooks";
+import { logOutUser } from "../features/user/userSlice";
 
 interface SidebarProps {
   sidebar: boolean;
@@ -16,6 +18,11 @@ interface SidebarProps {
 }
 
 const Sidebar: FC<SidebarProps> = ({ sidebar, handleToggleSidebar }) => {
+  const dispatch = useAppDispatch();
+  const logOutHandler = () => {
+    dispatch(logOutUser());
+  };
+
   return (
     <SidebarContainer sidebar={sidebar} onClick={handleToggleSidebar}>
       <li>
@@ -45,7 +52,7 @@ const Sidebar: FC<SidebarProps> = ({ sidebar, handleToggleSidebar }) => {
 
       <hr />
 
-      <li>
+      <li onClick={logOutHandler}>
         <MdExitToApp size={23} />
         <span>Log Out</span>
       </li>
