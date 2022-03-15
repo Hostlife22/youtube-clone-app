@@ -1,30 +1,83 @@
-import React from "react";
+import moment from "moment";
+import numeral from "numeral";
+import React, { FC, useEffect, useState } from "react";
 import { AiFillEye } from "react-icons/ai";
 import styled from "styled-components";
+import request from "../api/api";
+import { IThumb, IVideo } from "../app/types";
 
-const Video = () => {
+interface VideoProps {
+  video: IVideo;
+}
+
+const Video: FC<VideoProps> = ({ video }) => {
+  const {
+    id,
+    snippet: {
+      channelId,
+      channelTitle,
+      title,
+      publishedAt,
+      thumbnails: { medium },
+    },
+  } = video;
+
+  const [views, setViews] = useState<string | null>(null);
+  const [duration, setDuration] = useState<string | null>(null);
+  const [channelIcon, setChannelIcon] = useState<IThumb | null | undefined>(
+    null
+  );
+
+  const seconds = moment.duration(duration).asSeconds();
+  const _duration = moment.utc(seconds * 1000).format("mm:ss");
+
+  useEffect(() => {
+    const getVideoDetaild = async () => {
+      const {
+        data: { items },
+      } = await request("/videos", {
+        params: {
+          part: "contentDetails,statistics",
+          id: id,
+        },
+      });
+      setDuration(items[0].contentDetails.duration);
+      setViews(items[0].statistics.viewCount);
+    };
+    getVideoDetaild();
+  }, [id]);
+
+  useEffect(() => {
+    const getChannelIcon = async () => {
+      const {
+        data: { items },
+      } = await request("/channels", {
+        params: {
+          part: "snippet",
+          id: channelId,
+        },
+      });
+      setChannelIcon(items[0].snippet.thumbnails.default);
+    };
+    getChannelIcon();
+  }, [channelId]);
+
   return (
     <VideoContainer>
       <VideoTop>
-        <img
-          src="https://i.ytimg.com/vi/3yDnGk7DVCo/hqdefault.jpg?sqp=-oaymwEcCPYBEIoBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLDrVNMOvPiNUAHVEoQnhumx2FWedw"
-          alt="video"
-        />
-        <span>05:43</span>
+        <img src={medium.url} alt="video" />
+        <span>{_duration}</span>
       </VideoTop>
-      <VideoTitle> Create app in 5 minutes #made by Chintu</VideoTitle>
+      <VideoTitle>{title}</VideoTitle>
       <VideoDetails>
         <span>
-          <AiFillEye /> 5m Views •
+          <AiFillEye /> {numeral(views).format("0.a")} Views •
         </span>
-        <span>5 days ago</span>
+        <span> {moment(publishedAt).fromNow()}</span>
       </VideoDetails>
       <VideoChannel>
-        <img
-          src="https://yt3.ggpht.com/YHQQj0dkNbcRFE7PNLr4enu6pYLrVTb11uDA-3t8kr0W0bXn3yk43vrX3taVVL3Gtg1NFAT3LA=s88-c-k-c0x00ffffff-no-rj"
-          alt=""
-        />
-        <p>Rainbow Hat Jr</p>
+        <img src={channelIcon?.url} alt="" />
+        <p>{channelTitle}</p>
       </VideoChannel>
     </VideoContainer>
   );

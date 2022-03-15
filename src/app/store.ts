@@ -1,9 +1,11 @@
 import { Action, configureStore, ThunkAction } from "@reduxjs/toolkit";
 import userReducer from "../features/user/userSlice";
+import videosReducer from "../features/videos/videosSlice";
 
 export const store = configureStore({
   reducer: {
     auth: userReducer,
+    homeVideos: videosReducer,
   },
 });
 
