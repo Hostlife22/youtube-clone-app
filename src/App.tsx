@@ -1,36 +1,39 @@
-import React, { useState } from "react";
-import { Container } from "react-bootstrap";
-import styled from "styled-components";
-import "./App.css";
-import Header from "./components/Header";
-import Sidebar from "./components/Sidebar";
+import React from "react";
+import {
+  BrowserRouter as Router,
+  Navigate,
+  Route,
+  Routes,
+} from "react-router-dom";
+import Layuot from "./components/Layuot";
 import HomeScreen from "./screens/HomeScreen";
+import LoginScreen from "./screens/LoginScreen";
 
 function App() {
-  const [sidebar, toggleSidebar] = useState<boolean>(false);
-
-  const handleToggleSidebar = (): void => {
-    toggleSidebar((value) => !value);
-  };
-
   return (
-    <>
-      <Header handleToggleSidebar={handleToggleSidebar} />
-      <AppContainer className="border border-info">
-        <Sidebar sidebar={sidebar} handleToggleSidebar={handleToggleSidebar} />
-        <BootstrapContainer fluid classsName="border border-warning">
-          <HomeScreen />
-        </BootstrapContainer>
-      </AppContainer>
-    </>
+    <Router>
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <Layuot>
+              <HomeScreen />
+            </Layuot>
+          }
+        />
+        <Route
+          path="search"
+          element={
+            <Layuot>
+              <h1>Search Result</h1>
+            </Layuot>
+          }
+        />
+        <Route path="auth" element={<LoginScreen />} />
+        <Route path="*" element={<Navigate to="/" />} />
+      </Routes>
+    </Router>
   );
 }
 
 export default App;
-
-const AppContainer = styled.div`
-  display: flex;
-  height: 90vh;
-`;
-
-const BootstrapContainer = styled(Container)``;
