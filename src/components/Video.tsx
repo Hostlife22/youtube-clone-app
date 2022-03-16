@@ -2,6 +2,7 @@ import moment from "moment";
 import numeral from "numeral";
 import React, { FC, useEffect, useState } from "react";
 import { AiFillEye } from "react-icons/ai";
+import { LazyLoadImage } from "react-lazy-load-image-component";
 import styled from "styled-components";
 import request from "../api/api";
 import { IThumb, IVideo } from "../app/types";
@@ -73,8 +74,9 @@ const Video: FC<VideoProps> = ({ video }) => {
   return (
     <VideoContainer>
       <VideoTop>
-        <img src={medium.url} alt="video" />
-        <span>{_duration}</span>
+        {/* <img src={medium.url} alt="video" /> */}
+        <LazyLoadImage src={medium.url} effect="blur" />
+        <VideoDuration>{_duration}</VideoDuration>
       </VideoTop>
       <VideoTitle>{title}</VideoTitle>
       <VideoDetails>
@@ -84,7 +86,8 @@ const Video: FC<VideoProps> = ({ video }) => {
         <span> {moment(publishedAt).fromNow()}</span>
       </VideoDetails>
       <VideoChannel>
-        <img src={channelIcon?.url} alt="" />
+        <LazyLoadImage src={channelIcon?.url} effect="blur" />
+        {/* <img src={channelIcon?.url} alt="" /> */}
         <p>{channelTitle}</p>
       </VideoChannel>
     </VideoContainer>
@@ -105,18 +108,22 @@ const VideoTop = styled.div`
   margin-bottom: 0.5rem;
   position: relative;
 
-  > img {
+  .lazy-load-image-background {
     width: 100%;
   }
 
-  > span {
-    position: absolute;
-    bottom: 0.3rem;
-    right: 0.3rem;
-    padding: 0.2rem;
-    background: #080808ec;
-    border-radius: 3px;
+  img {
+    width: 100%;
   }
+`;
+
+const VideoDuration = styled.span`
+  position: absolute;
+  bottom: 0.3rem;
+  right: 0.3rem;
+  padding: 0.2rem;
+  background: #080808ec;
+  border-radius: 3px;
 `;
 
 const VideoTitle = styled.div`
@@ -139,7 +146,7 @@ const VideoChannel = styled.div`
   align-items: center;
   margin: 0.5rem 0;
 
-  > img {
+  img {
     width: 36px;
     height: 36px;
     border-radius: 50%;

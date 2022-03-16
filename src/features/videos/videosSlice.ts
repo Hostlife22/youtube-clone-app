@@ -16,24 +16,28 @@ const initialState = {
   nextPageToken: "",
   loading: false,
   error: null,
-  activeCategory: "",
+  activeCategory: "All",
 };
 
 export const getPopularVideos = createAsyncThunk(
   "videos/popular_videos",
-  async (_, { rejectWithValue }) => {
+  async (_, { rejectWithValue, getState }) => {
     try {
+      const {
+        homeVideos: { nextPageToken },
+      } = getState() as RootState;
+
       const { data } = await request("/videos", {
         params: {
           part: "snippet,contentDetails,statistics",
           chart: "mostPopular",
           regionCode: "US",
           maxResults: 20,
-          pageToken: "",
+          pageToken: nextPageToken,
         },
       });
 
-      return data;
+      return { data, keyword: "All" };
     } catch (error: any) {
       let e: Error = error;
       return rejectWithValue(e.message);
@@ -45,7 +49,9 @@ export const getVideosCategory = createAsyncThunk(
   "videos/videos_category",
   async (keyword: string, { rejectWithValue, getState }) => {
     try {
-      const { nextPageToken } = getState() as VideosState;
+      const {
+        homeVideos: { nextPageToken },
+      } = getState() as RootState;
       const { data } = await request("/search", {
         params: {
           part: "snippet",
@@ -78,11 +84,14 @@ export const videosSlice = createSlice({
       })
       .addCase(
         getPopularVideos.fulfilled,
-        (state, action: PayloadAction<IVideos>) => {
+        (state, action: PayloadAction<{ data: IVideos; keyword: string }>) => {
           state.loading = false;
-          state.videos = action.payload.items;
-          state.nextPageToken = action.payload.nextPageToken;
-          state.activeCategory = "all";
+          state.videos =
+            state.activeCategory === action.payload.keyword
+              ? [...state.videos, ...action.payload.data.items]
+              : action.payload.data.items;
+          state.nextPageToken = action.payload.data.nextPageToken;
+          state.activeCategory = action.payload.keyword;
         }
       )
       .addCase(
@@ -119,5 +128,9 @@ export const videosSlice = createSlice({
 export const { increment, decrement } = videosSlice.actions;
 
 export const selectHomeVideos = (state: RootState) => state.homeVideos.videos;
+export const selectVideosLoading = (state: RootState) =>
+  state.homeVideos.loading;
+export const selectActiveCategory = (state: RootState) =>
+  state.homeVideos.activeCategory;
 
 export default videosSlice.reducer;

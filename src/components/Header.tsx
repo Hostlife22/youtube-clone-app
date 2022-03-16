@@ -47,6 +47,10 @@ const HeaderContainer = styled.div`
   height: 10vh;
   width: 100%;
 
+  position: fixed;
+  top: 0;
+  z-index: 999;
+
   @media (max-width: 520px) {
     padding: 1rem;
 

@@ -72,6 +72,9 @@ const SidebarContainer = styled.nav<SidebarProps>`
   height: 90vh;
   padding-top: 2rem;
   transition: transform 0.2s ease-in;
+  position: sticky;
+  top: 10vh;
+  left: 0;
 
   @media (max-width: 1224px) {
     width: 90px;

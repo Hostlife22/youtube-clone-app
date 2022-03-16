@@ -1,7 +1,10 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { useAppDispatch } from "../app/hooks";
-import { getVideosCategory } from "../features/videos/videosSlice";
+import {
+  getPopularVideos,
+  getVideosCategory,
+} from "../features/videos/videosSlice";
 
 const keywords: string[] = [
   "All",
@@ -29,7 +32,11 @@ const CategoriesBar = () => {
 
   const handleClick = (value: string): void => {
     setActiveElement(value);
-    dispatch(getVideosCategory(value));
+    if (value === "All") {
+      dispatch(getPopularVideos());
+    } else {
+      dispatch(getVideosCategory(value));
+    }
   };
 
   return (

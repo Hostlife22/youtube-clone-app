@@ -21,4 +21,9 @@ body {
   color: var(--text-color);
   font-family: "Roboto", sans-serif;
   letter-spacing: 0.1px;
+  overflow-x: hidden;
 }
+
+/* .infinite-scroll-component {
+  overflow: hidden !important;
+} */

@@ -27,7 +27,7 @@ export default Layuot;
 
 const LayuotContainer = styled.div`
   display: flex;
-  height: 90vh;
+  margin-top: 10vh;
 `;
 
 const BootstrapContainer = styled(Container)``;
