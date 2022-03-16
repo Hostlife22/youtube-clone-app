@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import { useAppDispatch } from "../app/hooks";
+import { getVideosCategory } from "../features/videos/videosSlice";
 
 const keywords: string[] = [
   "All",
@@ -23,9 +25,11 @@ const keywords: string[] = [
 
 const CategoriesBar = () => {
   const [activeElement, setActiveElement] = useState<string>("All");
+  const dispatch = useAppDispatch();
 
   const handleClick = (value: string): void => {
     setActiveElement(value);
+    dispatch(getVideosCategory(value));
   };
 
   return (

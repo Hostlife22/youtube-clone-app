@@ -6,6 +6,11 @@ import styled from "styled-components";
 import request from "../api/api";
 import { IThumb, IVideo } from "../app/types";
 
+interface IVideoCategory {
+  kind: string;
+  videoId: string;
+}
+
 interface VideoProps {
   video: IVideo;
 }
@@ -31,6 +36,9 @@ const Video: FC<VideoProps> = ({ video }) => {
   const seconds = moment.duration(duration).asSeconds();
   const _duration = moment.utc(seconds * 1000).format("mm:ss");
 
+  const _id = id as any as IVideoCategory;
+  const _videoId = _id?.videoId || id;
+
   useEffect(() => {
     const getVideoDetaild = async () => {
       const {
@@ -38,14 +46,14 @@ const Video: FC<VideoProps> = ({ video }) => {
       } = await request("/videos", {
         params: {
           part: "contentDetails,statistics",
-          id: id,
+          id: _videoId,
         },
       });
       setDuration(items[0].contentDetails.duration);
       setViews(items[0].statistics.viewCount);
     };
     getVideoDetaild();
-  }, [id]);
+  }, [_videoId]);
 
   useEffect(() => {
     const getChannelIcon = async () => {

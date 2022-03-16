@@ -8,6 +8,7 @@ export interface VideosState {
   nextPageToken: string;
   loading: boolean;
   error: any;
+  activeCategory: string;
 }
 
 const initialState = {
@@ -15,10 +16,11 @@ const initialState = {
   nextPageToken: "",
   loading: false,
   error: null,
+  activeCategory: "",
 };
 
 export const getPopularVideos = createAsyncThunk(
-  "videos/popular-videos",
+  "videos/popular_videos",
   async (_, { rejectWithValue }) => {
     try {
       const { data } = await request("/videos", {
@@ -32,6 +34,29 @@ export const getPopularVideos = createAsyncThunk(
       });
 
       return data;
+    } catch (error: any) {
+      let e: Error = error;
+      return rejectWithValue(e.message);
+    }
+  }
+);
+
+export const getVideosCategory = createAsyncThunk(
+  "videos/videos_category",
+  async (keyword: string, { rejectWithValue, getState }) => {
+    try {
+      const { nextPageToken } = getState() as VideosState;
+      const { data } = await request("/search", {
+        params: {
+          part: "snippet",
+          maxResults: 20,
+          pageToken: nextPageToken,
+          q: keyword,
+          type: "video",
+        },
+      });
+
+      return { data, keyword };
     } catch (error: any) {
       let e: Error = error;
       return rejectWithValue(e.message);
@@ -57,6 +82,7 @@ export const videosSlice = createSlice({
           state.loading = false;
           state.videos = action.payload.items;
           state.nextPageToken = action.payload.nextPageToken;
+          state.activeCategory = "all";
         }
       )
       .addCase(
@@ -64,6 +90,27 @@ export const videosSlice = createSlice({
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;
+          state.activeCategory = "";
+        }
+      )
+      .addCase(getVideosCategory.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(
+        getVideosCategory.fulfilled,
+        (state, action: PayloadAction<{ data: IVideos; keyword: string }>) => {
+          state.loading = false;
+          state.videos = action.payload.data.items;
+          state.nextPageToken = action.payload.data.nextPageToken;
+          state.activeCategory = action.payload.keyword;
+        }
+      )
+      .addCase(
+        getVideosCategory.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+          state.activeCategory = "";
         }
       );
   },
