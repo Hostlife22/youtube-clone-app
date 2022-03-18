@@ -24,6 +24,12 @@ interface ISnippet {
   };
   title: string;
 }
+interface IStatistics {
+  commentCount: string;
+  favoriteCount: string;
+  likeCount: string;
+  viewCount: string;
+}
 
 export interface IVideo {
   contentDetaild: {
@@ -37,12 +43,7 @@ export interface IVideo {
   id: string;
   kind: string;
   snippet: ISnippet;
-  statistics: {
-    commentCount: string;
-    favoriteCount: string;
-    likeCount: string;
-    viewCount: string;
-  };
+  statistics: IStatistics;
 }
 
 export interface IVideos {
@@ -53,5 +54,22 @@ export interface IVideos {
   pageInfo: {
     totalResults: number;
     results: number;
+  };
+}
+
+export interface IVideoById {
+  etag: string;
+  id: string;
+  kind: string;
+  snippet: ISnippet;
+  statistics: IStatistics;
+}
+export interface IVideosById {
+  etag: string;
+  items: IVideoById[];
+  kind: string;
+  pageInfo: {
+    resultsPerPage: number;
+    totalResults: number;
   };
 }

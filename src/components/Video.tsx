@@ -3,6 +3,7 @@ import numeral from "numeral";
 import React, { FC, useEffect, useState } from "react";
 import { AiFillEye } from "react-icons/ai";
 import { LazyLoadImage } from "react-lazy-load-image-component";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import request from "../api/api";
 import { IThumb, IVideo } from "../app/types";
@@ -33,6 +34,7 @@ const Video: FC<VideoProps> = ({ video }) => {
   const [channelIcon, setChannelIcon] = useState<IThumb | null | undefined>(
     null
   );
+  const navigate = useNavigate();
 
   const seconds = moment.duration(duration).asSeconds();
   const _duration = moment.utc(seconds * 1000).format("mm:ss");
@@ -71,10 +73,13 @@ const Video: FC<VideoProps> = ({ video }) => {
     getChannelIcon();
   }, [channelId]);
 
+  const handleVideoClick = () => {
+    navigate(`/watch/${_videoId}`);
+  };
+
   return (
-    <VideoContainer>
+    <VideoContainer onClick={handleVideoClick}>
       <VideoTop>
-        {/* <img src={medium.url} alt="video" /> */}
         <LazyLoadImage src={medium.url} effect="blur" />
         <VideoDuration>{_duration}</VideoDuration>
       </VideoTop>
@@ -87,7 +92,6 @@ const Video: FC<VideoProps> = ({ video }) => {
       </VideoDetails>
       <VideoChannel>
         <LazyLoadImage src={channelIcon?.url} effect="blur" />
-        {/* <img src={channelIcon?.url} alt="" /> */}
         <p>{channelTitle}</p>
       </VideoChannel>
     </VideoContainer>

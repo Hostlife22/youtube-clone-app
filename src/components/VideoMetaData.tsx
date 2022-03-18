@@ -1,26 +1,35 @@
 import moment from "moment";
 import numeral from "numeral";
-import React from "react";
+import React, { FC } from "react";
 import { MdThumbDown, MdThumbUp } from "react-icons/md";
 import ShowMoreText from "react-show-more-text";
 import styled from "styled-components";
+import { IVideoById } from "../app/types";
 
-const VideoMetaData = () => {
+interface VideoMetaDataProps {
+  video: IVideoById | null;
+  videoId: string | undefined;
+}
+
+const VideoMetaData: FC<VideoMetaDataProps> = ({ video, videoId }) => {
   return (
     <VideoMetaDataContainer>
       <VideoMetaDataTop>
-        <h5>Video Title</h5>
+        <h5>{video?.snippet.title}</h5>
         <div>
           <span>
-            {numeral(1000).format("0.a")} Views •{moment("2020-06-6").fromNow()}
+            {numeral(video?.statistics.viewCount).format("0.a")} Views •
+            {moment(video?.snippet.publishedAt).fromNow()}
           </span>
 
           <div>
             <span>
-              <MdThumbUp size={26} /> {numeral(1000).format("0.a")}
+              <MdThumbUp size={26} />{" "}
+              {numeral(video?.statistics.likeCount).format("0.a")}
             </span>
             <span>
-              <MdThumbDown size={26} /> {numeral(1000).format("0.a")}
+              <MdThumbDown size={26} />{" "}
+              {numeral(video?.statistics.likeCount).format("0.a")}
             </span>
           </div>
         </div>
@@ -32,7 +41,7 @@ const VideoMetaData = () => {
             alt="avatar"
           />
           <div>
-            <span>Backbanch Coder</span>
+            <span>{video?.snippet.channelTitle}</span>
             <span>{numeral(1000).format("0.a")} Subscribers</span>
           </div>
         </div>
@@ -46,16 +55,7 @@ const VideoMetaData = () => {
           anchorClass="showMoreText"
           expanded={false}
         >
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dignissimos
-          quasi deserunt molestias, fuga minus quibusdam. Accusamus
-          reprehenderit distinctio debitis et. Lorem ipsum dolor sit amet,
-          consectetur adipisicing elit. Dignissimos quasi deserunt molestias,
-          fuga minus quibusdam. Accusamus reprehenderit distinctio debitis et.
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dignissimos
-          quasi deserunt molestias, fuga minus quibusdam. Accusamus
-          reprehenderit distinctio debitis et. Lorem ipsum dolor sit amet,
-          consectetur adipisicing elit. Dignissimos quasi deserunt molestias,
-          fuga minus quibusdam. Accusamus reprehenderit distinctio debitis et.
+          {video?.snippet.description}
         </ShowMoreText>
       </VideoMetaDataDescription>
     </VideoMetaDataContainer>
@@ -132,8 +132,7 @@ const VideoMetaDataDescription = styled.div`
     text-decoration: none;
     display: block;
     margin: 1rem 0;
-	color: #fff;
-	font-weight: 500;
-	
+    color: #fff;
+    font-weight: 500;
   }
 `;
