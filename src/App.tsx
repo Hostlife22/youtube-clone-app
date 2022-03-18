@@ -5,6 +5,7 @@ import Layuot from "./components/Layuot";
 import { selectAccessToken, selectLoading } from "./features/user/userSlice";
 import HomeScreen from "./screens/HomeScreen";
 import LoginScreen from "./screens/LoginScreen";
+import WatchScreen from "./screens/WatchScreen";
 
 function App() {
   const accessToken = useAppSelector(selectAccessToken);
@@ -32,6 +33,14 @@ function App() {
         element={
           <Layuot>
             <h1>Search Result</h1>
+          </Layuot>
+        }
+      />
+      <Route
+        path="watch/:id"
+        element={
+          <Layuot>
+            <WatchScreen />
           </Layuot>
         }
       />

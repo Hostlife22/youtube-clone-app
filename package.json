@@ -29,6 +29,7 @@
     "react-redux": "^7.2.6",
     "react-router-dom": "^6.2.2",
     "react-scripts": "5.0.0",
+    "react-show-more-text": "^1.5.2",
     "styled-components": "^5.3.3",
     "typescript": "~4.1.5"
   },
@@ -55,6 +56,7 @@
   },
   "devDependencies": {
     "@types/numeral": "^2.0.2",
-    "@types/react-lazy-load-image-component": "^1.5.2"
+    "@types/react-lazy-load-image-component": "^1.5.2",
+    "@types/react-show-more-text": "^1.4.2"
   }
 }
