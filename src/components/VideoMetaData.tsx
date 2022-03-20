@@ -1,10 +1,17 @@
 import moment from "moment";
 import numeral from "numeral";
-import React, { FC } from "react";
+import React, { FC, useEffect } from "react";
 import { MdThumbDown, MdThumbUp } from "react-icons/md";
 import ShowMoreText from "react-show-more-text";
 import styled from "styled-components";
+import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { IVideoById } from "../app/types";
+import {
+  checkSubscriptionStatus,
+  getChannelDetails,
+  selectChannel,
+  selectSubscribiption,
+} from "../features/channel/channelSlice";
 
 interface VideoMetaDataProps {
   video: IVideoById | null;
@@ -12,6 +19,19 @@ interface VideoMetaDataProps {
 }
 
 const VideoMetaData: FC<VideoMetaDataProps> = ({ video, videoId }) => {
+  const channelId = video?.snippet.channelId;
+  const disptach = useAppDispatch();
+  const { snippet: channelSnippet, statistics: channelStatistics } =
+    useAppSelector(selectChannel);
+  const subscriptionStatus = useAppSelector(selectSubscribiption);
+
+  useEffect(() => {
+    if (channelId) {
+      disptach(getChannelDetails(channelId));
+      disptach(checkSubscriptionStatus(channelId));
+    }
+  }, [disptach, channelId]);
+
   return (
     <VideoMetaDataContainer>
       <VideoMetaDataTop>
@@ -36,16 +56,21 @@ const VideoMetaData: FC<VideoMetaDataProps> = ({ video, videoId }) => {
       </VideoMetaDataTop>
       <VideoMetaDataChannel>
         <div>
-          <img
-            src="https://tr-static.eodev.com/files/d1e/96e1725f89132ee2a1113a8db2a7f107.jpg"
-            alt="avatar"
-          />
+          <img src={channelSnippet?.thumbnails?.default?.url} alt="avatar" />
           <div>
             <span>{video?.snippet.channelTitle}</span>
-            <span>{numeral(1000).format("0.a")} Subscribers</span>
+            <span>
+              {numeral(channelStatistics?.subscriberCount).format("0.a")}{" "}
+              Subscribers
+            </span>
           </div>
         </div>
-        <button className="btn border-0 p-2 m-2">Subscribe</button>
+        <button
+          className={`btn border-0 p-2 m-2 `}
+          style={{ backgroundColor: `${subscriptionStatus ? "gray" : "red"}` }}
+        >
+          {subscriptionStatus ? "Subscribed" : "Subscribe"}
+        </button>
       </VideoMetaDataChannel>
       <VideoMetaDataDescription>
         <ShowMoreText
@@ -110,11 +135,11 @@ const VideoMetaDataChannel = styled.div`
   }
 
   > button {
-    background-color: red;
     color: #fff;
     border-radius: 0;
     text-transform: uppercase;
     letter-spacing: 0.5px;
+
     &:hover {
       color: #fff;
     }

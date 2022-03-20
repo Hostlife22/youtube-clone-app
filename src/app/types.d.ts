@@ -73,3 +73,49 @@ export interface IVideosById {
     totalResults: number;
   };
 }
+
+interface ISnippetChannel {
+  customUrl: string;
+  description: string;
+  localized: {
+    description: string;
+    title: string;
+  };
+  publishedAt: string;
+  thumbnails: {
+    default: IThumb;
+    high: IThumb;
+    medium: IThumb;
+  };
+  title: string;
+}
+
+interface IStatisticsChannel {
+  hiddenSubscriberCount: boolean;
+  subscriberCount: string;
+  videoCount: string;
+  viewCount: string;
+}
+
+export interface IChannel {
+  contentDetails: {
+    relatedPlaylists: {
+      likes: string;
+      uploads: string;
+    };
+  };
+  etag: string;
+  id: string;
+  kind: string;
+  snippet: ISnippetChannel;
+  statistics: IStatisticsChannel;
+}
+export interface IChannelDetails {
+  etag: string;
+  items: IChannel[];
+  kind: string;
+  pageInfo: {
+    resultsPerPage: number;
+    totalResults: number;
+  };
+}

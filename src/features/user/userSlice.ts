@@ -33,6 +33,7 @@ export const userLogin = createAsyncThunk(
         photoUrl: res.user.photoURL,
       };
       provider.addScope("https://www.googleapis.com/auth/youtube.force-ssl");
+      console.log(accessToken);
 
       sessionStorage.setItem("ytc-access-token", accessToken);
       sessionStorage.setItem("ytc-user", JSON.stringify(user));
