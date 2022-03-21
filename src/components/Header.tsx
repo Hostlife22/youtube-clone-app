@@ -1,7 +1,8 @@
-import React, { FC } from "react";
+import React, { FC, useState } from "react";
 import { AiOutlineSearch } from "react-icons/ai";
 import { FaBars } from "react-icons/fa";
 import { MdApps, MdNotifications } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 type HeaderProps = {
@@ -9,6 +10,14 @@ type HeaderProps = {
 };
 
 const Header: FC<HeaderProps> = ({ handleToggleSidebar }) => {
+  const [input, setInput] = useState<string>("");
+  const navigate = useNavigate();
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    navigate(`/search/${input}`);
+  };
+
   return (
     <HeaderContainer className="border border-dark">
       <HeaderMenu size={26} onClick={handleToggleSidebar} />
@@ -17,8 +26,13 @@ const Header: FC<HeaderProps> = ({ handleToggleSidebar }) => {
         alt="logo"
       />
 
-      <form>
-        <input type="text" placeholder="Search" />
+      <form onSubmit={handleSubmit}>
+        <input
+          type="text"
+          placeholder="Search"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+        />
         <button type="submit">
           <AiOutlineSearch size={22} />
         </button>

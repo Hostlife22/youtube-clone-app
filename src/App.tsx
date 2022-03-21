@@ -5,6 +5,7 @@ import Layuot from "./components/Layuot";
 import { selectAccessToken, selectLoading } from "./features/user/userSlice";
 import HomeScreen from "./screens/HomeScreen";
 import LoginScreen from "./screens/LoginScreen";
+import SearchScreen from "./screens/SearchScreen";
 import WatchScreen from "./screens/WatchScreen";
 
 function App() {
@@ -29,10 +30,10 @@ function App() {
         }
       />
       <Route
-        path="search"
+        path="search/:query"
         element={
           <Layuot>
-            <h1>Search Result</h1>
+            <SearchScreen />
           </Layuot>
         }
       />

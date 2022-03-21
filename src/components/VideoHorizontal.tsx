@@ -11,9 +11,10 @@ import { IRelatedId, IThumb } from "../app/types";
 
 interface VideoHorizontalProp {
   video: IRelatedId;
+  searchScreen?: boolean | undefined;
 }
 
-const VideoHorizontal: FC<VideoHorizontalProp> = ({ video }) => {
+const VideoHorizontal: FC<VideoHorizontalProp> = ({ video, searchScreen }) => {
   const [views, setViews] = useState<string | null>(null);
   const [duration, setDuration] = useState<string | null>(null);
   const [channelIcon, setChannelIcon] = useState<IThumb | null | undefined>(
@@ -63,34 +64,41 @@ const VideoHorizontal: FC<VideoHorizontalProp> = ({ video }) => {
     getChannelIcon();
   }, [channelId]);
 
+  const isVideo = id.kind === "youtube#video";
   const seconds = moment.duration(duration).asSeconds();
   const _duration = moment.utc(seconds * 1000).format("mm:ss");
 
   const handleClick = () => {
-    navigate(`/watch/${id.videoId}`);
+    isVideo
+      ? navigate(`/watch/${id.videoId}`)
+      : navigate(`/channel/${id.channelId}`);
   };
 
   return (
     <VideoHorizontalContainer onClick={handleClick}>
-      <VideoHorizontalLeft xs={6} md={6}>
+      <VideoHorizontalLeft xs={6} md={searchScreen ? 4 : 6} isVideo={isVideo}>
         <LazyLoadImage
           src={medium.url}
           effect="blur"
           wrapperClassName="videoHorizontal-wrapper"
         />
-        <VideoHorizontalDuration>{_duration}</VideoHorizontalDuration>
+        {isVideo && (
+          <VideoHorizontalDuration>{_duration}</VideoHorizontalDuration>
+        )}
       </VideoHorizontalLeft>
-      <VideoHorizontalRight xs={6} md={6}>
+      <VideoHorizontalRight xs={6} md={searchScreen ? 8 : 6}>
         <p>{title}</p>
-        <div>
-          <AiFillEye /> {numeral(views).format("0.a")} Views •
-          {moment(publishedAt).fromNow()}
-        </div>
+        {isVideo && (
+          <div>
+            <AiFillEye /> {numeral(views).format("0.a")} Views •
+            {moment(publishedAt).fromNow()}
+          </div>
+        )}
+
+        {isVideo && <p className="mt-1">{description}</p>}
+
         <VideoHorizontalShannel>
-          {/* <LazyLoadImage
-            src="https://tr-static.eodev.com/files/d1e/96e1725f89132ee2a1113a8db2a7f107.jpg"
-            effect="blur"
-          /> */}
+          {isVideo && <LazyLoadImage src={channelIcon?.url} effect="blur" />}
           <p>{channelTitle}</p>
         </VideoHorizontalShannel>
       </VideoHorizontalRight>
@@ -103,7 +111,7 @@ export default VideoHorizontal;
 const VideoHorizontalContainer = styled(Row)`
   margin: 4px;
   padding: 8px 0;
-  align-items: center; //align-align-items-center
+  align-items: center;
   border-bottom: 0.3px solid var(--border-color);
   cursor: pointer;
 
@@ -118,6 +126,13 @@ const VideoHorizontalLeft = styled(Col)`
 
   img {
     width: 100%;
+
+    ${(prop) =>
+      !prop.isVideo &&
+      `
+	width: 50%;
+	border-radius: 50%
+	`}
   }
 
   .videoHorizontal-wrapper {

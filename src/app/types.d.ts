@@ -172,9 +172,9 @@ export interface IRelatedSnippet {
   thumbnails: {
     default: IThumb;
     high: IThumb;
-    maxres: IThumb;
+    maxres?: IThumb;
     medium: IThumb;
-    standard: IThumb;
+    standard?: IThumb;
   };
   title: string;
 }
@@ -184,7 +184,8 @@ export interface IRelatedId {
   etag: string;
   id: {
     kind: string;
-    videoId: string;
+    videoId?: string;
+    channelId?: string;
   };
   snippet: IRelatedSnippet;
 }
