@@ -1,19 +1,24 @@
 import moment from "moment";
-import React from "react";
+import React, { FC } from "react";
 import styled from "styled-components";
+import { Comments } from "../features/comments/commnentsSlice";
 
-const Comment = () => {
+interface CommentProps {
+  comment: Comments;
+}
+
+const Comment: FC<CommentProps> = ({ comment }) => {
+  const { authorDisplayName, authorProfileImageUrl, publishedAt, textDisplay } =
+    comment;
+
   return (
     <CommentContainer>
-      <CommentAvatar
-        src="https://tr-static.eodev.com/files/d1e/96e1725f89132ee2a1113a8db2a7f107.jpg"
-        alt="avatar"
-      />
+      <CommentAvatar src={authorProfileImageUrl} alt="avatar" />
       <CommentBody>
         <CommentHeader>
-          Summit Dey•{moment("2021-06-06").fromNow()}
+          {authorDisplayName} • {moment(publishedAt).fromNow()}
         </CommentHeader>
-        <p>Nice Video Dude!!!</p>
+        <p>{textDisplay}</p>
       </CommentBody>
     </CommentContainer>
   );

@@ -1,26 +1,71 @@
-import React from "react";
+import React, { FC, useEffect, useState } from "react";
 import styled from "styled-components";
+import uniqid from "uniqid";
+import { useAppDispatch, useAppSelector } from "../app/hooks";
+import {
+  createComment,
+  getCommentsOfVideoById,
+  selectComments,
+} from "../features/comments/commnentsSlice";
+import { selectUser } from "../features/user/userSlice";
 import Comment from "./Comment";
 
-const Comments = () => {
-  const handleCommit = () => {};
+interface CommentsProps {
+  videoId: string | undefined;
+  totalComments: string | undefined;
+}
+
+const Comments: FC<CommentsProps> = ({ videoId, totalComments }) => {
+  const [text, setText] = useState<string>("");
+  const dispatch = useAppDispatch();
+  const comments = useAppSelector(selectComments);
+  const user = useAppSelector(selectUser);
+  const { name, photoUrl }: { name: string; photoUrl: string } = user as any;
+
+  useEffect(() => {
+    if (videoId) {
+      dispatch(getCommentsOfVideoById(videoId));
+    }
+  }, [dispatch, videoId]);
+
+  const handleCommit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (text.trim().length === 0) return;
+
+    const comment = {
+      id: uniqid(),
+      authorDisplayName: name,
+      authorProfileImageUrl: photoUrl,
+      publishedAt: new Date().toISOString(),
+      textDisplay: text,
+    };
+
+    setText("");
+    dispatch(createComment(comment));
+  };
 
   return (
     <CommentsContainer>
-      <p>1234 Comments</p>
+      <p>{totalComments} Comments</p>
       <CommentsForm>
         <CommentsAvatar
           src="https://tr-static.eodev.com/files/d1e/96e1725f89132ee2a1113a8db2a7f107.jpg"
           alt="avatar"
         />
         <form onSubmit={handleCommit}>
-          <input type="text" placeholder="Write a comment..." />
+          <input
+            type="text"
+            placeholder="Write a comment..."
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+          />
           <button className="border-0">Comment</button>
         </form>
       </CommentsForm>
       <CommetsList>
-        {[...Array(15)].map(() => (
-          <Comment />
+        {comments?.map((com) => (
+          <Comment comment={com} key={com.id} />
         ))}
       </CommetsList>
     </CommentsContainer>

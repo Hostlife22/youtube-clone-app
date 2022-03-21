@@ -90,5 +90,6 @@ export const { increment, decrement, incrementByAmount } = counterSlice.actions;
 
 export const selectAccessToken = (state: RootState) => state.auth.accessToken;
 export const selectLoading = (state: RootState) => state.auth.loading;
+export const selectUser = (state: RootState) => state.auth.user;
 
 export default counterSlice.reducer;

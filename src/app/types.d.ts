@@ -119,3 +119,45 @@ export interface IChannelDetails {
     totalResults: number;
   };
 }
+export interface ICommentSnippet {
+  authorChannelId: { value: string };
+  authorChannelUrl: string;
+  authorDisplayName: string;
+  authorProfileImageUrl: string;
+  canRate: boolean;
+  likeCount: number;
+  publishedAt: string;
+  textDisplay: string;
+  textOriginal: string;
+  updatedAt: string;
+  videoId: string;
+  viewerRating: string;
+}
+export interface ICommentsSnippet {
+  canReply: boolean;
+  isPublic: boolean;
+  topLevelComment: {
+    kind: string;
+    etag: string;
+    id: string;
+    snippet: ICommentSnippet;
+  };
+  totalReplyCount: number;
+  videoId: string;
+}
+export interface IComment {
+  etag: string;
+  id: string;
+  kind: string;
+  snippet: ICommentsSnippet;
+}
+export interface ICommentData {
+  etag: string;
+  items: IComment[];
+  kind: string;
+  nextPageToken: string;
+  pageInfo: {
+    resultsPerPage: number;
+    totalResults: number;
+  };
+}

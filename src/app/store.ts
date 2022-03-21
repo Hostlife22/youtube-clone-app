@@ -1,5 +1,6 @@
 import { Action, configureStore, ThunkAction } from "@reduxjs/toolkit";
 import channelReducer from "../features/channel/channelSlice";
+import commnentsReducer from "../features/comments/commnentsSlice";
 import userReducer from "../features/user/userSlice";
 import videoReducer from "../features/video/videoSlice";
 import videosReducer from "../features/videos/videosSlice";
@@ -10,6 +11,7 @@ export const store = configureStore({
     homeVideos: videosReducer,
     selectedVideo: videoReducer,
     channelDetails: channelReducer,
+    commentList: commnentsReducer,
   },
 });
 
