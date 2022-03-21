@@ -161,3 +161,30 @@ export interface ICommentData {
     totalResults: number;
   };
 }
+
+export interface IRelatedSnippet {
+  channelId: string;
+  channelTitle: string;
+  description: string;
+  liveBroadcastContent: string;
+  publishTime: string;
+  publishedAt: string;
+  thumbnails: {
+    default: IThumb;
+    high: IThumb;
+    maxres: IThumb;
+    medium: IThumb;
+    standard: IThumb;
+  };
+  title: string;
+}
+
+export interface IRelatedId {
+  kind: string;
+  etag: string;
+  id: {
+    kind: string;
+    videoId: string;
+  };
+  snippet: IRelatedSnippet;
+}

@@ -1,36 +1,97 @@
 import moment from "moment";
 import numeral from "numeral";
-import React from "react";
+import React, { FC, useEffect, useState } from "react";
 import { Col, Row } from "react-bootstrap";
 import { AiFillEye } from "react-icons/ai";
 import { LazyLoadImage } from "react-lazy-load-image-component";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import request from "../api/api";
+import { IRelatedId, IThumb } from "../app/types";
 
-const VideoHorizontal = () => {
-  const seconds = moment.duration("100").asSeconds();
+interface VideoHorizontalProp {
+  video: IRelatedId;
+}
+
+const VideoHorizontal: FC<VideoHorizontalProp> = ({ video }) => {
+  const [views, setViews] = useState<string | null>(null);
+  const [duration, setDuration] = useState<string | null>(null);
+  const [channelIcon, setChannelIcon] = useState<IThumb | null | undefined>(
+    null
+  );
+  const navigate = useNavigate();
+  const {
+    id,
+    snippet: {
+      channelId,
+      channelTitle,
+      description,
+      title,
+      publishedAt,
+      thumbnails: { medium },
+    },
+  } = video;
+
+  useEffect(() => {
+    const getVideoDetaild = async () => {
+      const {
+        data: { items },
+      } = await request("/videos", {
+        params: {
+          part: "contentDetails,statistics",
+          id: id.videoId,
+        },
+      });
+      setDuration(items[0].contentDetails.duration);
+      setViews(items[0].statistics.viewCount);
+    };
+    getVideoDetaild();
+  }, [id]);
+
+  useEffect(() => {
+    const getChannelIcon = async () => {
+      const {
+        data: { items },
+      } = await request("/channels", {
+        params: {
+          part: "snippet",
+          id: channelId,
+        },
+      });
+      setChannelIcon(items[0].snippet.thumbnails.default);
+    };
+    getChannelIcon();
+  }, [channelId]);
+
+  const seconds = moment.duration(duration).asSeconds();
   const _duration = moment.utc(seconds * 1000).format("mm:ss");
+
+  const handleClick = () => {
+    navigate(`/watch/${id.videoId}`);
+  };
+
   return (
-    <VideoHorizontalContainer>
-      <VideoHorizontalLeft xs={6} md={4}>
+    <VideoHorizontalContainer onClick={handleClick}>
+      <VideoHorizontalLeft xs={6} md={6}>
         <LazyLoadImage
-          src="https://tr-static.eodev.com/files/d1e/96e1725f89132ee2a1113a8db2a7f107.jpg"
+          src={medium.url}
           effect="blur"
           wrapperClassName="videoHorizontal-wrapper"
         />
         <VideoHorizontalDuration>{_duration}</VideoHorizontalDuration>
       </VideoHorizontalLeft>
-      <VideoHorizontalRight xs={6} md={8}>
-        <p>Be a full stavk developer in 1 month</p>
+      <VideoHorizontalRight xs={6} md={6}>
+        <p>{title}</p>
         <div>
-          <AiFillEye /> {numeral(1000000).format("0.a")} Views •
-          {moment("2020-06-09").fromNow()}
+          <AiFillEye /> {numeral(views).format("0.a")} Views •
+          {moment(publishedAt).fromNow()}
         </div>
         <VideoHorizontalShannel>
           {/* <LazyLoadImage
             src="https://tr-static.eodev.com/files/d1e/96e1725f89132ee2a1113a8db2a7f107.jpg"
             effect="blur"
           /> */}
-          <p>Backbanch Coder</p>
+          <p>{channelTitle}</p>
         </VideoHorizontalShannel>
       </VideoHorizontalRight>
     </VideoHorizontalContainer>
@@ -74,7 +135,7 @@ const VideoHorizontalRight = styled(Col)`
     letter-spacing: 0.3px;
     overflow: hidden;
     display: -webkit-box;
-    -webkit-line-clamp: 1;
+    -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
   }
 
@@ -101,8 +162,10 @@ const VideoHorizontalRight = styled(Col)`
 `;
 const VideoHorizontalDuration = styled.span`
   position: absolute;
-  bottom: 0.3rem;
-  right: 0.3rem;
+  bottom: 0.6rem;
+  right: 1.2rem;
+
+  font-size: 0.9rem;
   padding: 0.2rem;
   background: #080808ec;
   border-radius: 3px;
@@ -133,6 +196,7 @@ const VideoHorizontalShannel = styled.div`
   }
 
   p {
+    margin-bottom: 0;
     font-size: 0.9rem;
     overflow: hidden;
     display: -webkit-box;

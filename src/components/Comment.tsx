@@ -13,7 +13,14 @@ const Comment: FC<CommentProps> = ({ comment }) => {
 
   return (
     <CommentContainer>
-      <CommentAvatar src={authorProfileImageUrl} alt="avatar" />
+      <CommentAvatar
+        src={
+          authorProfileImageUrl
+            ? authorProfileImageUrl
+            : "https://yt3.ggpht.com/ytc/AKedOLTOkZQLHxcN-zDHAhB64XxI6uhq5zZl88u3Fygi=s48-c-k-c0x00ffffff-no-rj"
+        }
+        alt="avatar"
+      />
       <CommentBody>
         <CommentHeader>
           {authorDisplayName} • {moment(publishedAt).fromNow()}

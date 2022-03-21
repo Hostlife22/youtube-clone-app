@@ -1,23 +1,32 @@
 import React, { useEffect } from "react";
 import { Col, Row } from "react-bootstrap";
+import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import Comments from "../components/Comments";
 import VideoHorizontal from "../components/VideoHorizontal";
 import VideoMetaData from "../components/VideoMetaData";
+import {
+  getRelatedVideos,
+  selectRelatedVideo,
+} from "../features/relatedVideos/relatedVideoSlice";
 import { getVideoById, selectVideo } from "../features/video/videoSlice";
 
 const WatchScreen = () => {
   const { id } = useParams<{ id: string | undefined }>();
   const dispatch = useAppDispatch();
   const { video, loading } = useAppSelector(selectVideo);
+  const { videos, loading: relatedVideoLoading } =
+    useAppSelector(selectRelatedVideo);
 
   useEffect(() => {
     if (id) {
       dispatch(getVideoById(id));
+      dispatch(getRelatedVideos(id));
     }
   }, [dispatch, id]);
+
   return (
     <Row>
       <Col lg={8}>
@@ -42,9 +51,17 @@ const WatchScreen = () => {
         />
       </Col>
       <Col lg={4}>
-        {[...Array(10)].map(() => (
-          <VideoHorizontal />
-        ))}
+        {!loading ? (
+          videos
+            ?.filter((video) => video.snippet)
+            .map((video) => (
+              <VideoHorizontal video={video} key={video.id.videoId} />
+            ))
+        ) : (
+          <SkeletonTheme baseColor="#343a40" highlightColor="#3c4147">
+            <Skeleton width="100%" height="130px" count={15}></Skeleton>
+          </SkeletonTheme>
+        )}
       </Col>
     </Row>
   );
