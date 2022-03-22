@@ -5,7 +5,7 @@ import styled from "styled-components";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import VideoHorizontal from "../components/VideoHorizontal";
 import {
-  getVideosByChannel,
+  getSubscribedChannels,
   selectSubsctiptions,
 } from "../features/channels/videoChannelsSlice";
 
@@ -14,7 +14,7 @@ const SubscriptionsScreen = () => {
   const { loading, videos } = useAppSelector(selectSubsctiptions);
 
   useEffect(() => {
-    dispatch(getVideosByChannel());
+    dispatch(getSubscribedChannels());
   }, [dispatch]);
 
   return (

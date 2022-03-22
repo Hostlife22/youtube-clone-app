@@ -19,7 +19,7 @@ const initialState: ChannelState = {
 
 export const getChannelDetails = createAsyncThunk(
   "channel/channel_details",
-  async (id: string, { rejectWithValue }) => {
+  async (id: string | undefined, { rejectWithValue }) => {
     try {
       const { data }: { data: IChannelDetails } = await request("/channels", {
         params: {

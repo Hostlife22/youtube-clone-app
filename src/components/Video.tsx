@@ -15,9 +15,10 @@ interface IVideoCategory {
 
 interface VideoProps {
   video: IVideo;
+  channelScreen: boolean;
 }
 
-const Video: FC<VideoProps> = ({ video }) => {
+const Video: FC<VideoProps> = ({ video, channelScreen }) => {
   const {
     id,
     snippet: {
@@ -27,6 +28,7 @@ const Video: FC<VideoProps> = ({ video }) => {
       publishedAt,
       thumbnails: { medium },
     },
+    contentDetails,
   } = video;
 
   const [views, setViews] = useState<string | null>(null);
@@ -40,7 +42,7 @@ const Video: FC<VideoProps> = ({ video }) => {
   const _duration = moment.utc(seconds * 1000).format("mm:ss");
 
   const _id = id as any as IVideoCategory;
-  const _videoId = _id?.videoId || id;
+  const _videoId = _id?.videoId || contentDetails?.videoId || id;
 
   useEffect(() => {
     const getVideoDetaild = async () => {
@@ -90,10 +92,12 @@ const Video: FC<VideoProps> = ({ video }) => {
         </span>
         <span> {moment(publishedAt).fromNow()}</span>
       </VideoDetails>
-      <VideoChannel>
-        <LazyLoadImage src={channelIcon?.url} effect="blur" />
-        <p>{channelTitle}</p>
-      </VideoChannel>
+      {!channelScreen && (
+        <VideoChannel>
+          <LazyLoadImage src={channelIcon?.url} effect="blur" />
+          <p>{channelTitle}</p>
+        </VideoChannel>
+      )}
     </VideoContainer>
   );
 };

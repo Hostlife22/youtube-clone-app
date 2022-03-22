@@ -227,3 +227,63 @@ export interface ISubscriptionsChannel {
     totalResults: number;
   };
 }
+
+export interface IUploadChannelItem {
+  contentDetails: {
+    relatedPlaylists: { likes: string; uploads: string };
+  };
+  etag: string;
+  id: string;
+  kind: string;
+}
+export interface IUploadChannel {
+  etag: string;
+  items: IUploadChannelItem[];
+  kind: string;
+  pageInfo: {
+    resultsPerPage: number;
+    totalResults: number;
+  };
+}
+
+export interface IVideosChannelSnippet {
+  channelId: string;
+  channelTitle: string;
+  description: string;
+  playlistId: string;
+  position: number;
+  publishedAt: string;
+  resourceId: { kind: string; videoId: string };
+  thumbnails: {
+    default: IThumb;
+    medium: IThumb;
+    high: IThumb;
+    standard: IThumb;
+    maxres: IThumb;
+  };
+  title: string;
+  videoOwnerChannelId: string;
+  videoOwnerChannelTitle: string;
+}
+
+export interface IvideoChannel {
+  contentDetails: {
+    videoId: string;
+    videoPublishedAt: string;
+  };
+  etag: string;
+  id: string;
+  kind: string;
+  snippet: IVideosChannelSnippet;
+}
+
+export interface IVideosChannel {
+  etag: string;
+  items: IvideoChannel[];
+  kind: string;
+  nextPageToken: string;
+  pageInfo: {
+    resultsPerPage: number;
+    totalResults: number;
+  };
+}

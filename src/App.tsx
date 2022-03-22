@@ -3,6 +3,7 @@ import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
 import { useAppSelector } from "./app/hooks";
 import Layuot from "./components/Layuot";
 import { selectAccessToken, selectLoading } from "./features/user/userSlice";
+import ChannelScreen from "./screens/ChannelScreen";
 import HomeScreen from "./screens/HomeScreen";
 import LoginScreen from "./screens/LoginScreen";
 import SearchScreen from "./screens/SearchScreen";
@@ -54,7 +55,14 @@ function App() {
           </Layuot>
         }
       />
-      <Route path="channel/:channelId" element={<h1>xhabbel</h1>} />
+      <Route
+        path="channel/:channelId"
+        element={
+          <Layuot>
+            <ChannelScreen />
+          </Layuot>
+        }
+      />
       <Route path="auth" element={<LoginScreen />} />
       <Route path="*" element={<Navigate to="/" />} />
     </Routes>

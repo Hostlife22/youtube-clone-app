@@ -15,7 +15,7 @@ const initialState: SubscriptionsState = {
   error: "any",
 };
 
-export const getVideosByChannel = createAsyncThunk(
+export const getSubscribedChannels = createAsyncThunk(
   "channel/subscription_channels",
   async (_, { rejectWithValue, getState }) => {
     try {
@@ -33,8 +33,6 @@ export const getVideosByChannel = createAsyncThunk(
         }
       );
 
-      console.log(data);
-
       return data.items;
     } catch (error: any) {
       let e: Error = error;
@@ -49,18 +47,18 @@ export const subscriptionsChannelSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(getVideosByChannel.pending, (state) => {
+      .addCase(getSubscribedChannels.pending, (state) => {
         state.loading = true;
       })
       .addCase(
-        getVideosByChannel.fulfilled,
+        getSubscribedChannels.fulfilled,
         (state, action: PayloadAction<ISubscriptionChannel[]>) => {
           state.videos = action.payload;
           state.loading = false;
         }
       )
       .addCase(
-        getVideosByChannel.rejected,
+        getSubscribedChannels.rejected,
         (state, action: PayloadAction<any>) => {
           state.error = action.payload;
           state.loading = false;
