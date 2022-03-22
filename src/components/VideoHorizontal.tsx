@@ -12,15 +12,21 @@ import { IRelatedId, IThumb } from "../app/types";
 interface VideoHorizontalProp {
   video: IRelatedId;
   searchScreen?: boolean | undefined;
+  subsScreen?: boolean | undefined;
 }
 
-const VideoHorizontal: FC<VideoHorizontalProp> = ({ video, searchScreen }) => {
+const VideoHorizontal: FC<VideoHorizontalProp> = ({
+  video,
+  searchScreen,
+  subsScreen,
+}) => {
   const [views, setViews] = useState<string | null>(null);
   const [duration, setDuration] = useState<string | null>(null);
   const [channelIcon, setChannelIcon] = useState<IThumb | null | undefined>(
     null
   );
   const navigate = useNavigate();
+
   const {
     id,
     snippet: {
@@ -30,8 +36,10 @@ const VideoHorizontal: FC<VideoHorizontalProp> = ({ video, searchScreen }) => {
       title,
       publishedAt,
       thumbnails: { medium },
+      resourceId,
     },
   } = video;
+  const isVideo = !(id.kind === "youtube#channel" || subsScreen);
 
   useEffect(() => {
     const getVideoDetaild = async () => {
@@ -46,8 +54,11 @@ const VideoHorizontal: FC<VideoHorizontalProp> = ({ video, searchScreen }) => {
       setDuration(items[0].contentDetails.duration);
       setViews(items[0].statistics.viewCount);
     };
-    getVideoDetaild();
-  }, [id]);
+
+    if (isVideo) {
+      getVideoDetaild();
+    }
+  }, [id, isVideo]);
 
   useEffect(() => {
     const getChannelIcon = async () => {
@@ -64,19 +75,23 @@ const VideoHorizontal: FC<VideoHorizontalProp> = ({ video, searchScreen }) => {
     getChannelIcon();
   }, [channelId]);
 
-  const isVideo = id.kind === "youtube#video";
   const seconds = moment.duration(duration).asSeconds();
   const _duration = moment.utc(seconds * 1000).format("mm:ss");
+  const _channelId = resourceId?.channelId || channelId;
 
   const handleClick = () => {
     isVideo
       ? navigate(`/watch/${id.videoId}`)
-      : navigate(`/channel/${id.channelId}`);
+      : navigate(`/channel/${_channelId}`);
   };
 
   return (
     <VideoHorizontalContainer onClick={handleClick}>
-      <VideoHorizontalLeft xs={6} md={searchScreen ? 4 : 6} isVideo={isVideo}>
+      <VideoHorizontalLeft
+        xs={6}
+        md={searchScreen || subsScreen ? 4 : 6}
+        isvideo={isVideo.toString()}
+      >
         <LazyLoadImage
           src={medium.url}
           effect="blur"
@@ -86,7 +101,7 @@ const VideoHorizontal: FC<VideoHorizontalProp> = ({ video, searchScreen }) => {
           <VideoHorizontalDuration>{_duration}</VideoHorizontalDuration>
         )}
       </VideoHorizontalLeft>
-      <VideoHorizontalRight xs={6} md={searchScreen ? 8 : 6}>
+      <VideoHorizontalRight xs={6} md={searchScreen || subsScreen ? 8 : 6}>
         <p>{title}</p>
         {isVideo && (
           <div>
@@ -95,12 +110,17 @@ const VideoHorizontal: FC<VideoHorizontalProp> = ({ video, searchScreen }) => {
           </div>
         )}
 
-        {isVideo && <p className="mt-1">{description}</p>}
+        {(searchScreen || subsScreen) && (
+          <p className="mt-1 horizontal_desc">{description}</p>
+        )}
 
         <VideoHorizontalShannel>
           {isVideo && <LazyLoadImage src={channelIcon?.url} effect="blur" />}
           <p>{channelTitle}</p>
         </VideoHorizontalShannel>
+        {subsScreen && (
+          <p className="mt-2">{video?.contentDetails?.totalItemCount} Videos</p>
+        )}
       </VideoHorizontalRight>
     </VideoHorizontalContainer>
   );
@@ -128,7 +148,7 @@ const VideoHorizontalLeft = styled(Col)`
     width: 100%;
 
     ${(prop) =>
-      !prop.isVideo &&
+      prop.isvideo === "false" &&
       `
 	width: 50%;
 	border-radius: 50%
@@ -153,6 +173,12 @@ const VideoHorizontalRight = styled(Col)`
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
   }
+  .horizontal_desc {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
 
   > div {
     font-size: 0.9rem;
@@ -165,6 +191,10 @@ const VideoHorizontalRight = styled(Col)`
       display: -webkit-box;
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
+    }
+
+    .horizontal_desc {
+      display: none;
     }
 
     > div {

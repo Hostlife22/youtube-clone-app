@@ -40,19 +40,22 @@ export const checkSubscriptionStatus = createAsyncThunk(
   "subscription/set_subscription_status",
   async (id: string, { rejectWithValue, getState }) => {
     try {
-      //   const token = (getState() as RootState).auth.accessToken;
-      //   const { data } = await request("/subscriptions", {
-      //     params: {
-      //       part: "snippet",
-      //       forChannelId: id,
-      // 	  mine: true
-      //     },
-      //     headers: {
-      //       Authorization: `Bearer ${token}`,
-      //     },
-      //   });
+      const token = (getState() as RootState).auth.accessToken;
+      const { data }: { data: IChannelDetails } = await request(
+        "/subscriptions",
+        {
+          params: {
+            part: "snippet,contentDetails",
+            forChannelId: id,
+            mine: true,
+          },
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
-      return { status: Math.round(Math.random()) !== 0 };
+      return { status: data.items.length !== 0 };
     } catch (error: any) {
       let e: Error = error;
       return rejectWithValue(e.message);

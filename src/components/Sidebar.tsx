@@ -8,6 +8,7 @@ import {
   MdSubscriptions,
   MdThumbUp,
 } from "react-icons/md";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { useAppDispatch } from "../app/hooks";
 import { logOutUser } from "../features/user/userSlice";
@@ -25,14 +26,18 @@ const Sidebar: FC<SidebarProps> = ({ sidebar, handleToggleSidebar }) => {
 
   return (
     <SidebarContainer sidebar={sidebar} onClick={handleToggleSidebar}>
-      <li>
-        <MdHome size={23} />
-        <span>Home</span>
-      </li>
-      <li>
-        <MdSubscriptions size={23} />
-        <span>Subscriptions</span>
-      </li>
+      <Link to="/">
+        <li>
+          <MdHome size={23} />
+          <span>Home</span>
+        </li>
+      </Link>
+      <Link to="feed/subscriptions">
+        <li>
+          <MdSubscriptions size={23} />
+          <span>Subscriptions</span>
+        </li>
+      </Link>
       <li>
         <MdThumbUp size={23} />
         <span>Liked Video</span>
@@ -95,9 +100,14 @@ const SidebarContainer = styled.nav<SidebarProps>`
     z-index: 999;
   }
 
-  > li {
+  a {
+    text-decoration: none;
+  }
+
+  li {
     display: flex;
     align-items: center;
+    color: var(--text-color);
 
     padding: 0.6rem 1.5rem;
     margin: 0.2rem 0;
@@ -105,7 +115,7 @@ const SidebarContainer = styled.nav<SidebarProps>`
     list-style-type: none;
     transition: all 0.2s cubic-bezier(0.785, 0.135, 0.15, 0.86);
 
-    > span {
+    span {
       margin-left: 1rem;
       font-size: 14px;
       font-weight: 500;

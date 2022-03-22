@@ -3,6 +3,7 @@ import styled from "styled-components";
 import uniqid from "uniqid";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import {
+  addComment,
   createComment,
   getCommentsOfVideoById,
   selectComments,
@@ -43,6 +44,7 @@ const Comments: FC<CommentsProps> = ({ videoId, totalComments }) => {
 
     setText("");
     dispatch(createComment(comment));
+    dispatch(addComment({ id: videoId, text }));
   };
 
   return (

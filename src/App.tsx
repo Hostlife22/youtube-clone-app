@@ -6,6 +6,7 @@ import { selectAccessToken, selectLoading } from "./features/user/userSlice";
 import HomeScreen from "./screens/HomeScreen";
 import LoginScreen from "./screens/LoginScreen";
 import SearchScreen from "./screens/SearchScreen";
+import SubscriptionsScreen from "./screens/SubscriptionsScreen";
 import WatchScreen from "./screens/WatchScreen";
 
 function App() {
@@ -45,6 +46,15 @@ function App() {
           </Layuot>
         }
       />
+      <Route
+        path="feed/subscriptions"
+        element={
+          <Layuot>
+            <SubscriptionsScreen />
+          </Layuot>
+        }
+      />
+      <Route path="channel/:channelId" element={<h1>xhabbel</h1>} />
       <Route path="auth" element={<LoginScreen />} />
       <Route path="*" element={<Navigate to="/" />} />
     </Routes>

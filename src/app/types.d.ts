@@ -189,3 +189,41 @@ export interface IRelatedId {
   };
   snippet: IRelatedSnippet;
 }
+
+export interface ISubscriptionSnippet {
+  channelId: string;
+  description: string;
+  publishedAt: string;
+  resourceId: {
+    channelId: string;
+    kind: string;
+  };
+  thumbnails: {
+    default: IThumb;
+    high: IThumb;
+    medium: IThumb;
+  };
+  title: string;
+}
+
+export interface ISubscriptionChannel {
+  contentDetails: {
+    activityType: string;
+    newItemCount: number;
+    totalItemCount: number;
+  };
+  etag: string;
+  id: string;
+  kind: string;
+  snippet: ISubscriptionSnippet;
+}
+export interface ISubscriptionsChannel {
+  etag: string;
+  items: ISubscriptionChannel[];
+  kind: string;
+  nextPageToken: string;
+  pageInfo: {
+    resultsPerPage: number;
+    totalResults: number;
+  };
+}

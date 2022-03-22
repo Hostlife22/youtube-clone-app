@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { RootState } from "../../app/store";
-import auth from "../../firebase";
+import auth, { provider } from "../../firebase";
 
 export interface CounterState {
   accessToken: string | null;
@@ -25,15 +25,14 @@ export const userLogin = createAsyncThunk(
   "user/login",
   async (_, { rejectWithValue }) => {
     try {
-      const provider = new GoogleAuthProvider();
       const res = await signInWithPopup(auth, provider);
-      const accessToken = await res.user.getIdToken();
+      const credential = GoogleAuthProvider.credentialFromResult(res);
+      const accessToken: any = credential?.accessToken;
+
       const user = {
         name: res.user.displayName,
         photoUrl: res.user.photoURL,
       };
-      provider.addScope("https://www.googleapis.com/auth/youtube.force-ssl");
-      console.log(accessToken);
 
       sessionStorage.setItem("ytc-access-token", accessToken);
       sessionStorage.setItem("ytc-user", JSON.stringify(user));

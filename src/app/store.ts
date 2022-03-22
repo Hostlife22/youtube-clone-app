@@ -1,5 +1,6 @@
 import { Action, configureStore, ThunkAction } from "@reduxjs/toolkit";
 import channelReducer from "../features/channel/channelSlice";
+import videoChannelsReducer from "../features/channels/videoChannelsSlice";
 import commnentsReducer from "../features/comments/commnentsSlice";
 import relatedVideoReducer from "../features/relatedVideos/relatedVideoSlice";
 import searchedVideosReducer from "../features/search/searchSlice";
@@ -16,6 +17,7 @@ export const store = configureStore({
     commentList: commnentsReducer,
     relatedVideos: relatedVideoReducer,
     searchedVideos: searchedVideosReducer,
+    subscriptionsChannel: videoChannelsReducer,
   },
 });
 

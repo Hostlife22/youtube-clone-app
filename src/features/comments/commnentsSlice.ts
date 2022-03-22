@@ -30,7 +30,7 @@ const initialState: CommentsState = {
 
 export const getCommentsOfVideoById = createAsyncThunk(
   "comments/comments_list",
-  async (id: string, { rejectWithValue }) => {
+  async (id: string | undefined, { rejectWithValue }) => {
     try {
       const { data }: { data: ICommentData } = await request(
         "/commentThreads",
@@ -69,10 +69,12 @@ export const getCommentsOfVideoById = createAsyncThunk(
 
 export const addComment = createAsyncThunk(
   "commenta/create_commnet",
-  async (commentOption: CommentOption, { rejectWithValue, getState }) => {
+  async (
+    commentOption: CommentOption,
+    { rejectWithValue, getState, dispatch }
+  ) => {
     try {
       const { id, text } = commentOption;
-      console.log(id, text);
 
       const obj = {
         snippet: {
@@ -93,6 +95,8 @@ export const addComment = createAsyncThunk(
           Authorization: `Bearer ${(getState() as RootState).auth.accessToken}`,
         },
       });
+
+      setTimeout(() => dispatch(getCommentsOfVideoById(id)), 3000);
     } catch (error: any) {
       let e: Error = error;
       console.error(e.message);
