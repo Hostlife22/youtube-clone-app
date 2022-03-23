@@ -63,11 +63,7 @@ export const logOutUser = createAsyncThunk("user/log-out", async () => {
 export const counterSlice = createSlice({
   name: "user",
   initialState,
-  reducers: {
-    increment: (state) => {},
-    decrement: (state) => {},
-    incrementByAmount: (state, action: PayloadAction<number>) => {},
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(userLogin.pending, (state) => {
@@ -91,8 +87,6 @@ export const counterSlice = createSlice({
       });
   },
 });
-
-export const { increment, decrement, incrementByAmount } = counterSlice.actions;
 
 export const selectAccessToken = (state: RootState) => state.auth.accessToken;
 export const selectLoading = (state: RootState) => state.auth.loading;
