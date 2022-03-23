@@ -7,10 +7,23 @@ import { LazyLoadImage } from "react-lazy-load-image-component";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import request from "../api/api";
-import { IRelatedId, IThumb } from "../app/types";
+import { IThumb } from "../app/types";
+
+export interface VideoItem {
+  id: string;
+  kind: string;
+  channelId: string;
+  channelTitle?: string;
+  description: string;
+  title: string;
+  publishedAt: string;
+  url: string;
+  resourceId?: string;
+  totalItemCount?: number;
+}
 
 interface VideoHorizontalProp {
-  video: IRelatedId;
+  video: VideoItem;
   searchScreen?: boolean | undefined;
   subsScreen?: boolean | undefined;
 }
@@ -27,19 +40,7 @@ const VideoHorizontal: FC<VideoHorizontalProp> = ({
   );
   const navigate = useNavigate();
 
-  const {
-    id,
-    snippet: {
-      channelId,
-      channelTitle,
-      description,
-      title,
-      publishedAt,
-      thumbnails: { medium },
-      resourceId,
-    },
-  } = video;
-  const isVideo = !(id.kind === "youtube#channel" || subsScreen);
+  const isVideo = !(video.kind === "youtube#channel" || subsScreen);
 
   useEffect(() => {
     const getVideoDetaild = async () => {
@@ -48,7 +49,7 @@ const VideoHorizontal: FC<VideoHorizontalProp> = ({
       } = await request("/videos", {
         params: {
           part: "contentDetails,statistics",
-          id: id.videoId,
+          id: video.id,
         },
       });
       setDuration(items[0].contentDetails.duration);
@@ -58,7 +59,7 @@ const VideoHorizontal: FC<VideoHorizontalProp> = ({
     if (isVideo) {
       getVideoDetaild();
     }
-  }, [id, isVideo]);
+  }, [video.id, isVideo]);
 
   useEffect(() => {
     const getChannelIcon = async () => {
@@ -67,21 +68,21 @@ const VideoHorizontal: FC<VideoHorizontalProp> = ({
       } = await request("/channels", {
         params: {
           part: "snippet",
-          id: channelId,
+          id: video.channelId,
         },
       });
       setChannelIcon(items[0].snippet.thumbnails.default);
     };
     getChannelIcon();
-  }, [channelId]);
+  }, [video.channelId]);
 
   const seconds = moment.duration(duration).asSeconds();
   const _duration = moment.utc(seconds * 1000).format("mm:ss");
-  const _channelId = resourceId?.channelId || channelId;
+  const _channelId = video?.resourceId || video.channelId;
 
   const handleClick = () => {
     isVideo
-      ? navigate(`/watch/${id.videoId}`)
+      ? navigate(`/watch/${video.id}`)
       : navigate(`/channel/${_channelId}`);
   };
 
@@ -93,7 +94,7 @@ const VideoHorizontal: FC<VideoHorizontalProp> = ({
         isvideo={isVideo.toString()}
       >
         <LazyLoadImage
-          src={medium.url}
+          src={video.url}
           effect="blur"
           wrapperClassName="videoHorizontal-wrapper"
         />
@@ -102,25 +103,23 @@ const VideoHorizontal: FC<VideoHorizontalProp> = ({
         )}
       </VideoHorizontalLeft>
       <VideoHorizontalRight xs={6} md={searchScreen || subsScreen ? 8 : 6}>
-        <p>{title}</p>
+        <p>{video.title}</p>
         {isVideo && (
           <div>
             <AiFillEye /> {numeral(views).format("0.a")} Views •
-            {moment(publishedAt).fromNow()}
+            {moment(video.publishedAt).fromNow()}
           </div>
         )}
 
         {(searchScreen || subsScreen) && (
-          <p className="mt-1 horizontal_desc">{description}</p>
+          <p className="mt-1 horizontal_desc">{video.description}</p>
         )}
 
         <VideoHorizontalShannel>
           {isVideo && <LazyLoadImage src={channelIcon?.url} effect="blur" />}
-          <p>{channelTitle}</p>
+          <p>{video.channelTitle}</p>
         </VideoHorizontalShannel>
-        {subsScreen && (
-          <p className="mt-2">{video?.contentDetails?.totalItemCount} Videos</p>
-        )}
+        {subsScreen && <p className="mt-2">{video.totalItemCount} Videos</p>}
       </VideoHorizontalRight>
     </VideoHorizontalContainer>
   );
@@ -143,6 +142,7 @@ const VideoHorizontalContainer = styled(Row)`
 const VideoHorizontalLeft = styled(Col)`
   position: relative;
   text-align: center;
+  padding-left: 0 !important;
 
   img {
     width: 100%;

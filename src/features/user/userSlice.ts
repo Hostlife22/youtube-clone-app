@@ -3,9 +3,13 @@ import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { RootState } from "../../app/store";
 import auth, { provider } from "../../firebase";
 
+export interface User {
+  photoUrl: string;
+  name: string;
+}
 export interface CounterState {
   accessToken: string | null;
-  user: {} | null;
+  user: User | null;
   loading: boolean;
   error: any;
 }
@@ -29,10 +33,10 @@ export const userLogin = createAsyncThunk(
       const credential = GoogleAuthProvider.credentialFromResult(res);
       const accessToken: any = credential?.accessToken;
 
-      const user = {
+      const user: User = {
         name: res.user.displayName,
         photoUrl: res.user.photoURL,
-      };
+      } as any;
 
       sessionStorage.setItem("ytc-access-token", accessToken);
       sessionStorage.setItem("ytc-user", JSON.stringify(user));
@@ -69,11 +73,14 @@ export const counterSlice = createSlice({
       .addCase(userLogin.pending, (state) => {
         state.loading = true;
       })
-      .addCase(userLogin.fulfilled, (state, action) => {
-        state.loading = false;
-        state.accessToken = action.payload?.accessToken;
-        state.user = action.payload?.user;
-      })
+      .addCase(
+        userLogin.fulfilled,
+        (state, action: PayloadAction<{ user: User; accessToken: string }>) => {
+          state.loading = false;
+          state.accessToken = action.payload?.accessToken;
+          state.user = action.payload?.user;
+        }
+      )
       .addCase(userLogin.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;

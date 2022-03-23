@@ -20,7 +20,8 @@ interface SidebarProps {
 
 const Sidebar: FC<SidebarProps> = ({ sidebar, handleToggleSidebar }) => {
   const dispatch = useAppDispatch();
-  const logOutHandler = () => {
+
+  const logOutHandler = async () => {
     dispatch(logOutUser());
   };
 
@@ -32,7 +33,7 @@ const Sidebar: FC<SidebarProps> = ({ sidebar, handleToggleSidebar }) => {
           <span>Home</span>
         </li>
       </Link>
-      <Link to="feed/subscriptions">
+      <Link to="/feed/subscriptions">
         <li>
           <MdSubscriptions size={23} />
           <span>Subscriptions</span>

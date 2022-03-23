@@ -20,9 +20,20 @@ const SubscriptionsScreen = () => {
   return (
     <SubscriptionsContainer fluid>
       {!loading ? (
-        videos?.map((video) => (
-          <VideoHorizontal video={video} key={video.id} subsScreen />
-        ))
+        videos?.map((video) => {
+          const obj = {
+            id: video.id,
+            kind: video.kind,
+            channelId: video.snippet.channelId,
+            description: video.snippet.description,
+            title: video.snippet.title,
+            publishedAt: video.snippet.publishedAt,
+            url: video.snippet.thumbnails.medium.url,
+            resourceId: video.snippet.resourceId.channelId,
+            totalItemCount: video.contentDetails.totalItemCount,
+          };
+          return <VideoHorizontal video={obj} key={video.id} subsScreen />;
+        })
       ) : (
         <SkeletonTheme baseColor="#343a40" highlightColor="#3c4147">
           <Skeleton width="100%" height="160px" count={20}></Skeleton>

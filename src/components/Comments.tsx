@@ -8,7 +8,7 @@ import {
   getCommentsOfVideoById,
   selectComments,
 } from "../features/comments/commnentsSlice";
-import { selectUser } from "../features/user/userSlice";
+import { selectUser, User } from "../features/user/userSlice";
 import Comment from "./Comment";
 
 interface CommentsProps {
@@ -21,7 +21,7 @@ const Comments: FC<CommentsProps> = ({ videoId, totalComments }) => {
   const dispatch = useAppDispatch();
   const comments = useAppSelector(selectComments);
   const user = useAppSelector(selectUser);
-  const { name, photoUrl }: { name: string; photoUrl: string } = user as any;
+  const { name, photoUrl }: User = user as any;
 
   useEffect(() => {
     if (videoId) {
@@ -51,10 +51,7 @@ const Comments: FC<CommentsProps> = ({ videoId, totalComments }) => {
     <CommentsContainer>
       <p>{totalComments} Comments</p>
       <CommentsForm>
-        <CommentsAvatar
-          src="https://tr-static.eodev.com/files/d1e/96e1725f89132ee2a1113a8db2a7f107.jpg"
-          alt="avatar"
-        />
+        <CommentsAvatar src={photoUrl} alt="avatar" />
         <form onSubmit={handleCommit}>
           <input
             type="text"

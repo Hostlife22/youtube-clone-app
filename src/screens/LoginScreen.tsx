@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
+import HelmetCustom from "../components/HelmetCustom";
 import { selectAccessToken, userLogin } from "../features/user/userSlice";
 
 const LoginScreen = () => {
@@ -21,6 +22,10 @@ const LoginScreen = () => {
 
   return (
     <Login>
+      <HelmetCustom
+        title="Login With google"
+        description="This Project is made using YOUTUBE DATA API"
+      />
       <LoginContainer>
         <img
           src="https://pngimg.com/uploads/youtube/youtube_PNG2.png"

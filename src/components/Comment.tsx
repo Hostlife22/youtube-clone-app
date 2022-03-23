@@ -1,5 +1,6 @@
 import moment from "moment";
 import React, { FC } from "react";
+import { LazyLoadImage } from "react-lazy-load-image-component";
 import styled from "styled-components";
 import { Comments } from "../features/comments/commnentsSlice";
 
@@ -13,14 +14,7 @@ const Comment: FC<CommentProps> = ({ comment }) => {
 
   return (
     <CommentContainer>
-      <CommentAvatar
-        src={
-          authorProfileImageUrl
-            ? authorProfileImageUrl
-            : "https://yt3.ggpht.com/ytc/AKedOLTOkZQLHxcN-zDHAhB64XxI6uhq5zZl88u3Fygi=s48-c-k-c0x00ffffff-no-rj"
-        }
-        alt="avatar"
-      />
+      <CommentAvatar src={authorProfileImageUrl} effect="blur" alt="avatar" />
       <CommentBody>
         <CommentHeader>
           {authorDisplayName} • {moment(publishedAt).fromNow()}
@@ -40,7 +34,7 @@ const CommentContainer = styled.div`
   border-bottom: 2px solid #353946;
 `;
 
-const CommentAvatar = styled.img`
+const CommentAvatar = styled(LazyLoadImage)`
   border-radius: 50%;
   margin-right: 12px;
   width: 50px;

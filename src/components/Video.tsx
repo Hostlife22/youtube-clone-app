@@ -6,7 +6,8 @@ import { LazyLoadImage } from "react-lazy-load-image-component";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import request from "../api/api";
-import { IThumb, IVideo } from "../app/types";
+import { IThumb } from "../app/types";
+import { VideoItem } from "./VideoHorizontal";
 
 interface IVideoCategory {
   kind: string;
@@ -14,22 +15,12 @@ interface IVideoCategory {
 }
 
 interface VideoProps {
-  video: IVideo;
-  channelScreen: boolean;
+  video: VideoItem;
+  channelScreen?: boolean;
 }
 
 const Video: FC<VideoProps> = ({ video, channelScreen }) => {
-  const {
-    id,
-    snippet: {
-      channelId,
-      channelTitle,
-      title,
-      publishedAt,
-      thumbnails: { medium },
-    },
-    contentDetails,
-  } = video;
+  const { id, channelId, channelTitle, title, publishedAt, url } = video;
 
   const [views, setViews] = useState<string | null>(null);
   const [duration, setDuration] = useState<string | null>(null);
@@ -41,9 +32,6 @@ const Video: FC<VideoProps> = ({ video, channelScreen }) => {
   const seconds = moment.duration(duration).asSeconds();
   const _duration = moment.utc(seconds * 1000).format("mm:ss");
 
-  const _id = id as any as IVideoCategory;
-  const _videoId = _id?.videoId || contentDetails?.videoId || id;
-
   useEffect(() => {
     const getVideoDetaild = async () => {
       const {
@@ -51,14 +39,14 @@ const Video: FC<VideoProps> = ({ video, channelScreen }) => {
       } = await request("/videos", {
         params: {
           part: "contentDetails,statistics",
-          id: _videoId,
+          id: id,
         },
       });
       setDuration(items[0].contentDetails.duration);
       setViews(items[0].statistics.viewCount);
     };
     getVideoDetaild();
-  }, [_videoId]);
+  }, [id]);
 
   useEffect(() => {
     const getChannelIcon = async () => {
@@ -76,13 +64,13 @@ const Video: FC<VideoProps> = ({ video, channelScreen }) => {
   }, [channelId]);
 
   const handleVideoClick = () => {
-    navigate(`/watch/${_videoId}`);
+    navigate(`/watch/${id}`);
   };
 
   return (
     <VideoContainer onClick={handleVideoClick}>
       <VideoTop>
-        <LazyLoadImage src={medium.url} effect="blur" />
+        <LazyLoadImage src={url} effect="blur" />
         <VideoDuration>{_duration}</VideoDuration>
       </VideoTop>
       <VideoTitle>{title}</VideoTitle>

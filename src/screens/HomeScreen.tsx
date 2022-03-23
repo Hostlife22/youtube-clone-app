@@ -4,6 +4,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import styled from "styled-components";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import CategoriesBar from "../components/CategoriesBar";
+import HelmetCustom from "../components/HelmetCustom";
 import SkeletonVideo from "../components/SkeletonVideo";
 import Video from "../components/Video";
 import {
@@ -39,6 +40,7 @@ const HomeScreen = () => {
 
   return (
     <Container>
+      <HelmetCustom />
       <CategoriesBar />
       <InfiniteScroll
         dataLength={videos.length}
@@ -55,10 +57,20 @@ const HomeScreen = () => {
           ? videos.map((video) => {
               const _id = video.id as any as IVideoID;
               const _videoId = _id?.videoId || video.id;
+              const obj = {
+                id: _videoId,
+                kind: video.kind,
+                channelId: video.snippet.channelId,
+                channelTitle: video.snippet.channelTitle,
+                description: video.snippet.description,
+                title: video.snippet.title,
+                publishedAt: video.snippet.publishedAt,
+                url: video.snippet.thumbnails.medium.url,
+              };
 
               return (
                 <Col lg={3} md={4} key={_videoId}>
-                  <Video video={video} />
+                  <Video video={obj} />
                 </Col>
               );
             })

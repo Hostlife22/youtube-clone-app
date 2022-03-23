@@ -12,6 +12,7 @@ import {
   selectChannel,
   selectSubscribiption,
 } from "../features/channel/channelSlice";
+import HelmetCustom from "./HelmetCustom";
 
 interface VideoMetaDataProps {
   video: IVideoById | null;
@@ -34,6 +35,10 @@ const VideoMetaData: FC<VideoMetaDataProps> = ({ video, videoId }) => {
 
   return (
     <VideoMetaDataContainer>
+      <HelmetCustom
+        title={video?.snippet?.title}
+        description={video?.snippet?.description}
+      />
       <VideoMetaDataTop>
         <h5>{video?.snippet.title}</h5>
         <div>

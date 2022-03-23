@@ -4,6 +4,8 @@ import { FaBars } from "react-icons/fa";
 import { MdApps, MdNotifications } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { useAppSelector } from "../app/hooks";
+import { selectUser, User } from "../features/user/userSlice";
 
 type HeaderProps = {
   handleToggleSidebar: () => void;
@@ -12,6 +14,7 @@ type HeaderProps = {
 const Header: FC<HeaderProps> = ({ handleToggleSidebar }) => {
   const [input, setInput] = useState<string>("");
   const navigate = useNavigate();
+  const { photoUrl }: User = useAppSelector(selectUser) as any;
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -41,10 +44,7 @@ const Header: FC<HeaderProps> = ({ handleToggleSidebar }) => {
       <HeaderIcons>
         <MdNotifications size={28} />
         <MdApps size={28} />
-        <img
-          src="https://tr-static.eodev.com/files/d1e/96e1725f89132ee2a1113a8db2a7f107.jpg"
-          alt="avatar"
-        />
+        <img src={photoUrl} alt="avatar" />
       </HeaderIcons>
     </HeaderContainer>
   );

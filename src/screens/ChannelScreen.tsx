@@ -4,6 +4,7 @@ import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import { useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import ChannelHeader from "../components/ChannelHeader";
+import HelmetCustom from "../components/HelmetCustom";
 import Video from "../components/Video";
 import { getChannelDetails } from "../features/channel/channelSlice";
 import {
@@ -24,14 +25,31 @@ const ChannelScreen = () => {
   return (
     <>
       <ChannelHeader />
+      <HelmetCustom
+        title={videos[0]?.snippet?.channelTitle}
+        description={videos[0]?.snippet?.description}
+      />
       <Container>
         <Row className="mt-2">
           {!loading
-            ? videos?.map((video) => (
-                <Col md={4} lg={3} key={video.id}>
-                  <Video video={video} channelScreen />
-                </Col>
-              ))
+            ? videos?.map((video) => {
+                const obj = {
+                  id: video.contentDetails.videoId,
+                  kind: video.kind,
+                  channelId: video.snippet.channelId,
+                  channelTitle: video.snippet.channelTitle,
+                  description: video.snippet.description,
+                  title: video.snippet.title,
+                  publishedAt: video.snippet.publishedAt,
+                  url: video.snippet.thumbnails.medium.url,
+                };
+
+                return (
+                  <Col md={4} lg={3} key={video.id}>
+                    <Video video={obj} channelScreen />
+                  </Col>
+                );
+              })
             : [...Array(15)].map((_, i) => (
                 <Col md={4} lg={3} key={i}>
                   <SkeletonTheme baseColor="#343a40" highlightColor="#3c4147">
