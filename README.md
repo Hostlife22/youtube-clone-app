@@ -2,6 +2,10 @@
 
 ### [Site link](https://clone-4994c.web.app)
 
+<kbd>
+  <img align="right" alt="img" src="M3LADXF.jpeg"  />
+</kbd>
+
 ### 🛠 The tech stack is:
 
 - [React](https://reactjs.org/)
